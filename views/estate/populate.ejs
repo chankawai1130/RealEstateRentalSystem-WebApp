@@ -1,0 +1,10 @@
+<h6><b>Occupants:</b></h6>
+
+<% if (users.length == 0) { %>
+No occupants yet.
+<% } %>
+
+<% users.forEach(function(model) { %>
+<%= model.username %>
+<br>
+<% } )%>

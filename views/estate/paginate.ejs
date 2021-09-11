@@ -1,0 +1,185 @@
+<!--paginate.ejs-->
+<!--search-->
+
+<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="http://localhost:1337/estate/">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="http://localhost:1337/estate/paginate">Search</a>
+            <a class="nav-item nav-link" href="http://localhost:1337/estate/create#">Create</a>
+            <a class="nav-item nav-link" href="http://localhost:1337/estate/admin">Admin</a>
+        </div>
+    </div>
+</nav>
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Real Estate Rental System</h1>
+        <p class="lead">Real Estate Rental Management System is a web-based system to facilitate flatshare and
+            finding
+            roommates. </p>
+    </div>
+</div> -->
+
+<div class="container">
+    <div class="row">
+        <% estates.forEach( function(model) { %>
+        <div class="card col-xl-4 col-4">
+            <img style="float: left;" src="<%= model.image %>" />
+            <h1><a href="http://localhost:1337/estate/details/<%= model.id %>"><%= model.title %></a></h1>
+            <ul class="list-group">
+                <li class="list-group-item"><b>Estate: </b><%= model.name %></li>
+
+                <li class="list-group-item"><b>Gross Area: </b><%= model.area %> sq feet</li>
+
+
+                <li class="list-group-item"><b>Rent: </b>$<%= model.rent %></li>
+                <br>
+            </ul>
+        </div>
+        <% }); %>
+
+
+
+
+
+
+        <div class="form-group col-xl-4 col-12">
+            <form id="search" name="search" method="GET" action="http://localhost:1337/estate/search?">
+                <% const current = parseInt(req.query.page) || 1; %>
+
+
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="/estate/paginate/?page=<%= Math.max(current-1, 1) %>">Previous</a>
+                        </li>
+
+                        <% for (i = 1; i <= count; i++) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="/estate/paginate/?page=<%= i %>"><%= i %></a>
+                        </li>
+                        <% } %>
+
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="/estate/paginate/?page=<%= Math.min(current+1, count) %>">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+
+            
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group col-xl-12 col-12">
+                            <h1>Property Search</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group col-xl-3 col-3">
+                            <label for="Name">Estate: </label>
+                        </div>
+                        <div class="form-group col-xl-9 col-9">
+                            <select onchange="EstateSelected(this.value)" class="form-control" name="Name" id="Name">
+                                <option value="">Select estate here</option>
+                                <option value="Festival City">Festival City</option>
+                                <option value="Tin Ma Court">Tin Ma Court</option>
+                                <option value="City One Shatin">City One Shatin</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group col-xl-4 col-4">
+                            <label for="Bedrooms">Bedrooms:</label>
+                        </div>
+                        <div class="form-group col-xl-8 col-8">
+                            <input type="number" class="form-control" id="Bedrooms" name="Bedrooms">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-group col-xl-12 col-12">
+                        <span>Area(Sq. feet):</span><br>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-group col-xl-2 col-2">
+                                <label for="minArea">Min:</label>
+                            </div>
+                            <div class="form-group col-xl-4 col-4">
+                                <input type="number" class="form-control" id="minArea" name="minArea" min="0">
+                            </div>
+                            <div class="form-group col-xl-2 col-2">
+                                <label for="Estate[maxArea]">Max:</label>
+                            </div>
+                            <div class="form-group col-xl-4 col-4">
+                                <input type="number" class="form-control" id="Estate[maxArea]" name="Estate[maxArea]"
+                                    min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <div class="form-group col-xl-12 col-12">
+                        <span>Rent(HK$):</span>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-group col-xl-2 col-2">
+                                <label for="Estate[minRent]">Min:</label>
+                            </div>
+                            <div class="form-group col-xl-4 col-4">
+                                <input type="number" class="form-control" name="Estate[minRent]" min="0">
+                            </div>
+                            <div class="form-group col-xl-2 col-2">
+                                <label for="Estate[maxRent]">Max:</label>
+                            </div>
+                            <div class="form-group col-xl-4 col-4">
+                                <input type="number" class="form-control" name="Estate[maxRent]" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-xl-12 col-12">
+
+                    <script>
+                        function myFunction() {
+                            var url = 'http://localhost:1337/estate/search?bedrooms=';
+                            url += document.search.Bedrooms.value + '&';
+                            url += 'name=';
+                            url += document.search.Name.value;
+                            // repeat the above line for any other fields you may want to add
+                            window.location.href = url;
+                        }
+                    </script>
+
+
+
+
+                    <input type="button" class="btn btn-primary" onclick="myFunction()" value="Submit" />
+
+
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

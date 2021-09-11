@@ -1,0 +1,121 @@
+<!--details.ejs-->
+
+<div class="container">
+    <div class="row">
+        <div class="card col-xl-12 col-12">
+            <h1>
+                <%= estates.title %>
+            </h1>
+            <div class="row">
+                <div class="col-xl-8 col-8">
+                    <img class="img-fluid" src="<%= estates.image %>" />
+                    <br><br>
+                </div>
+                <div class="col-xl-4 col-4">
+                    <ul class="list-group">
+                        <li class="list-group-item"><b>Estate: </b><%= estates.name %></li>
+
+
+                        <li class="list-group-item"><b>Gross Area: </b><%= estates.area %> sq feet</li>
+
+                        <li class="list-group-item"><b>Rent: </b>$<%= estates.rent %></li>
+
+                        <li class="list-group-item"><b>Bedrooms: </b><%= estates.bedrooms %></li>
+                        <li class="list-group-item"><b>Expected tenants: </b><%= estates.tenants %></li>
+                        <li class="list-group-item"><b>Created:
+                            </b><%= new Date(estates.createdAt).toLocaleDateString() %></li>
+                        <li class="list-group-item"><b>Updated:
+                            </b><%= new Date(estates.updatedAt).toLocaleDateString() %></li>
+                        <br>
+                    </ul>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+<% if (req.session.role == "client") { %>
+
+    <%  if(estates.ownedBy.length != 0 ){ %>
+    
+    <button type="button" class="btn btn-primary" onclick="moveOut('<%= estates.id %>')">Move-out</button>
+
+    <% } else {%>
+    
+    <button type="button" class="btn btn-success" onclick="coRent('<%= estates.id %>')">Co-Rent</button>
+
+    <% } } %>
+    
+<% if (estates.tenants > 0) { %>
+
+<script>
+
+    async function coRent(estateID) {
+
+        var response = await fetch("/user/<%=req.session.uid%>/owns/add/" + estateID, {
+            method: "POST",
+            credentials: 'same-origin',
+        });
+
+        console.log(response);
+
+        if (response.redirected) {
+            alert("Successful operation!");
+            window.location = response.url; //redirect
+        } else if (response.status == 200) {
+            var data = await response.text();
+            alert(data);
+            location.reload(true);
+        } else if (response.status == 401) {
+            var data = await response.text();
+            alert(data);
+        } else {
+            alert(response.statusText);
+        }
+
+    }
+
+</script>
+<% }else { %>
+<script>
+    async function coRent(estateID) {
+
+
+        alert("No rooms available.");
+        location.reload(true);
+    }
+
+</script>
+<% } %>
+
+<script>
+    async function moveOut(estateID) {
+
+        var response = await fetch("/user/<%=req.session.uid%>/owns/remove/" + estateID, {
+            method: "POST",
+            credentials: 'same-origin',
+        });
+
+        console.log(response);
+
+        if (response.redirected) {
+            alert("Successful operation!");
+            window.location = response.url;
+        } else if (response.status == 200) //successfully
+        {
+            var data = await response.text();
+            alert(data);
+            location.reload(true);
+        } else if (response.status == 422) //fail
+        {
+            var data = await response.text();
+            alert(data);
+        } else {
+            alert(response.statusText);
+        }
+
+    }
+
+</script>

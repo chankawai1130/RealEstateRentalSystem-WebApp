@@ -1,0 +1,51 @@
+<form name="loginform" action="/user/login" method="POST" onsubmit="submitForm(this);return false">
+
+  <div class="form-group">
+    <label for="exampleInputEmail1">Username</label>
+    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+      placeholder="Enter email" name="username">
+  </div>
+
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Sign in</button>
+</form>
+
+<script>
+
+  async function submitForm(oFormElement) {
+
+    var response = await fetch(oFormElement.action, {
+      method: oFormElement.method,
+      credentials: 'same-origin',
+      body: new FormData(oFormElement),
+    });
+
+    if (response.ok) {
+      var data = await response.json();   // for res.ok() or res.json()
+      alert(data);
+      location.assign("http://localhost:1337/estate/index");
+      // var name = document.loginform.username.value;
+      // var user = await User.find().where({username : name});
+
+      // if (req.session.role.value == 'admin') {
+      //   location.assign("http://localhost:1337/estate/adminIndex");
+      // }
+
+      // if (document.loginform.username.value == "client") {
+      //   location.assign("http://localhost:1337/estate/clientIndex");
+      // }
+
+    } else if (response.status == 401) {
+      var data = await response.text();   // for res.send()
+      alert(data);
+    } else {
+      alert(response.statusText);
+    }
+
+  };
+
+</script>

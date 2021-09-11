@@ -1,0 +1,60 @@
+<!--admin.ejs-->
+<style type="text/css">
+  table {
+    width: 50%;
+    counter-reset: row-num;
+  }
+
+  table tr {
+    counter-increment: row-num;
+  }
+
+  table tr td:first-child::before {
+    content: counter(row-num) "  ";
+  }
+</style>
+
+<table class="table">
+  <% estates.forEach( function(value) { %>
+  <tr>
+    <td></td>
+    <td><a href="http://localhost:1337/estate/details/<%= value.id %>"><%= value.title %>&nbsp&nbsp</a></td>
+    <td><%= value.name %></td>
+    <td><a href="http://localhost:1337/estate/populate/<%= value.id %>" role="button"> Occupants </a></td>
+    <td><a href="http://localhost:1337/estate/view/<%= value.id %>">Edit</a></td>
+    <td><button type="button" class="btn btn-danger" onclick="deleteEstate('<%= value.id %>')">Delete</button></td>
+  </tr>
+  <% }); %>
+</table>
+
+<script>
+
+    async function deleteEstate(id) {
+  
+      var r = confirm("Confirm Delete?");
+  
+      if (r) {
+  
+        var response = await fetch("/estate/" + id, {
+          method: "DELETE",
+          credentials: 'same-origin',
+        });
+  
+        // var html = await response.text();
+        // alert(html);
+  
+        if (response.ok) {
+          var data = await response.json();
+          alert(data.message);
+          window.location = data.url;
+        } else {
+          alert(response.status + ": " + response.statusText);
+        }
+  
+      } else {
+        alert("cancelled");
+      }
+  
+    };
+  
+  </script>
